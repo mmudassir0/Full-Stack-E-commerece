@@ -5,8 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -21,12 +19,12 @@ const Header = () => {
             </Link>
           </div>
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href={"/new"} className="">
+            <Link href={"/collections/new"} className="">
               New Arrivals
             </Link>
-            <Link href={"/men"}>Men</Link>
-            <Link href={"/women"}>Women</Link>
-            <Link href={"accessries"}>Accessries</Link>
+            <Link href={"/collections/men"}>Men</Link>
+            <Link href={"/collections/women"}>Women</Link>
+            <Link href={"/collections/accessries"}>Accessries</Link>
           </nav>
           <div className="flex items-center space-x-4">
             <Button variant={"ghost"} size={"icon"}>
@@ -35,9 +33,23 @@ const Header = () => {
             <Button variant={"ghost"} size={"icon"}>
               <ShoppingCart className="h-5 w-5" />
             </Button>
-            <Button variant={"ghost"} size={"icon"}>
-              <CircleUserRound className="h-5 w-5" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={"ghost"} size={"icon"}>
+                  <CircleUserRound className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Link href={"/signin"} className="">
+                    Signin
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href={"/signup"}>Signup</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <div className="md:hidden">
               <DropdownMenu>
@@ -67,22 +79,6 @@ const Header = () => {
           </div>
         </div>
       </div>
-      {/* <div className="container m-auto flex justify-between items-center">
-        <div className="text-2xl font-bold">MAStore</div>
-        <div className="space-x-16 ">
-          <Link href={""} className="">
-            New Arrivals
-          </Link>
-          <Link href={""}>Men</Link>
-          <Link href={""}>Women</Link>
-          <Link href={""}>Accessries</Link>
-        </div>
-        <div className="flex gap-x-10 text-gray-700">
-          <Search />
-          <ShoppingCart />
-          <CircleUserRound />
-        </div>
-      </div> */}
     </header>
   );
 };

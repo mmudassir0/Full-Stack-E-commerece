@@ -1,11 +1,18 @@
 import SignInCard from "@/components/auth/signinCard";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import React from "react";
 
-const SignInPage = () => {
+const SignInPage = async () => {
+  const session = await auth();
+
+  if (session) {
+    redirect("/");
+  }
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <>
       <SignInCard />
-    </div>
+    </>
   );
 };
 

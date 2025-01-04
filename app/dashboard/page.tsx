@@ -7,11 +7,11 @@ export default async function DashboardPage() {
   if (!session) {
     redirect("/signin");
   }
-
+  console.log(session, "session");
   return (
     <div className="container mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-4">
-        Welcome, {session.user?.name || session.user?.email}
+        Welcome, {session.user?.name}, {session.user?.email}
       </h1>
       <form
         action={async () => {
