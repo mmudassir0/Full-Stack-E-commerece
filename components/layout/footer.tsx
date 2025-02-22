@@ -52,7 +52,11 @@ const Footer = () => {
                 <div className="mt-3 flex flex-col gap-y-1">
                   {footer.links.map((link) => {
                     return (
-                      <Link href={link.href} className="hover:text-white/60">
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        className="hover:text-white/60"
+                      >
                         {link.name}
                       </Link>
                     );

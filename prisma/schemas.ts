@@ -28,23 +28,6 @@ const nameSchema = z.object({
       /^[a-zA-Z\s-']+$/,
       " name can only contain letters, spaces, hyphens, and apostrophes"
     ),
-
-  // lastName: z
-  //   .string({ required_error: "Last name is required" })
-  //   .min(
-  //     NAME_MIN_LENGTH,
-  //     `Last name must be at least ${NAME_MIN_LENGTH} characters`
-  //   )
-  //   .max(
-  //     NAME_MAX_LENGTH,
-  //     `Last name must be less than ${NAME_MAX_LENGTH} characters`
-  //   )
-  //   .trim()
-  //   .regex(
-  //     /^[a-zA-Z\s-']+$/,
-  //     "Last name can only contain letters, spaces, hyphens, and apostrophes"
-  //   )
-  //   .optional(),
 });
 
 const phoneSchema = z.object({
@@ -67,21 +50,23 @@ const emailSchema = z.object({
     .trim(),
 });
 
+const passwordValidation = z
+  .string({ required_error: "Password is required" })
+  .min(
+    PASSWORD_MIN_LENGTH,
+    `Password must be at least ${PASSWORD_MIN_LENGTH} characters`
+  )
+  .max(
+    PASSWORD_MAX_LENGTH,
+    `Password must be less than ${PASSWORD_MAX_LENGTH} characters`
+  )
+  .regex(
+    PASSWORD_REGEX,
+    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+  );
+
 const passwordSchema = z.object({
-  password: z
-    .string({ required_error: "Password is required" })
-    .min(
-      PASSWORD_MIN_LENGTH,
-      `Password must be at least ${PASSWORD_MIN_LENGTH} characters`
-    )
-    .max(
-      PASSWORD_MAX_LENGTH,
-      `Password must be less than ${PASSWORD_MAX_LENGTH} characters`
-    )
-    .regex(
-      PASSWORD_REGEX,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    ),
+  password: passwordValidation,
 });
 
 // Main schemas
@@ -113,6 +98,9 @@ export const UpdateProfileSchema = z
   .merge(
     nameSchema.partial() // Makes all fields optional
   )
+  .merge(
+    emailSchema.partial() // Makes all fields optional
+  )
   .merge(phoneSchema)
   .extend({
     bio: z
@@ -120,21 +108,17 @@ export const UpdateProfileSchema = z
       .max(BIO_MAX_LENGTH, `Bio must be less than ${BIO_MAX_LENGTH} characters`)
       .optional()
       .nullable(),
-    timezone: z
-      .string()
-      .regex(/^[A-Za-z/_+-]+$/, "Invalid timezone format")
-      .optional(),
-    language: z
-      .string()
-      .regex(/^[a-z]{2}(-[A-Z]{2})?$/, "Invalid language format (e.g., en-US)")
-      .optional(),
-    gender: z
-      .enum(["male", "female", "other", "prefer_not_to_say"])
-      .optional()
-      .nullable(),
-    birthDate: z
-      .string()
-      .datetime()
+    // timezone: z
+    //   .string()
+    //   .regex(/^[A-Za-z/_+-]+$/, "Invalid timezone format")
+    //   .optional(),
+    // language: z
+    //   .string()
+    //   .regex(/^[a-z]{2}(-[A-Z]{2})?$/, "Invalid language format (e.g., en-US)")
+    //   .optional(),
+    gender: z.string().optional().nullable(),
+    dob: z
+      .date()
       .optional()
       .nullable()
       .refine(
@@ -148,13 +132,61 @@ export const UpdateProfileSchema = z
         { message: "User must be at least 13 years old" }
       ),
     profileImageUrl: z.string().url("Invalid URL format").optional().nullable(),
-    preferences: z.record(z.unknown()).optional().nullable(),
+    // preferences: z.record(z.unknown()).optional().nullable(),
+  });
+
+export const UpdateNewPasswordSchema = z
+  .object({
+    currentPassword: z
+      .string({ required_error: "Pasword is required" })
+      .min(1, "Password is required"),
+    newPassword: passwordValidation,
+    confirmPassword: passwordValidation,
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "passwords must match",
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    path: ["newPassword"],
+    message: "New password must not be the same as the current password",
+  });
+export const ForgetPasswordSchema = z.object({
+  email: z
+    .string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email format")
+    .toLowerCase()
+    .trim(),
+});
+
+export const ResetPasswordSchema = z
+  .object({
+    // token: z.string().min(1, "Token is required"),
+    password: z
+      .string({ required_error: "Pasword is required" })
+      .min(1, "Password is Required")
+      .min(8, "Password must be at least 8 characters")
+      .max(100)
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      ),
+    confirmPassword: z.string({ required_error: "Pasword is required" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
   });
 
 // Type exports
 export type SignUpFormValues = z.infer<typeof SignUpSchema>;
 export type SignInFormValues = z.infer<typeof SignInSchema>;
-export type UpdateProfileFormValues = z.infer<typeof UpdateProfileSchema>;
+export type ForgetPasswordValue = z.infer<typeof ForgetPasswordSchema>;
+export type ResetPasswordValue = z.infer<typeof ResetPasswordSchema>;
+
+export type UpdateProfileValues = z.infer<typeof UpdateProfileSchema>;
+export type UpdateNewPasswordValues = z.infer<typeof UpdateNewPasswordSchema>;
 
 // Error formatting helper
 export const formatZodError = (error: z.ZodError) => {

@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import { FaGithub } from "react-icons/fa";
 import { Button } from "../ui/button";
-import { FcGoogle } from "react-icons/fc";
 import { signIn } from "next-auth/react";
+import { AiOutlineGithub, AiOutlineGoogle } from "react-icons/ai";
+import { motion } from "framer-motion";
 
 const onClick = (provider: "google" | "github") => {
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -32,29 +32,31 @@ const onClick = (provider: "google" | "github") => {
 const Social = () => {
   return (
     <div className="grid grid-cols-2 w-full gap-4">
-      {/* <Separator /> */}
-      <Button
-        size={"lg"}
-        variant={"outline"}
-        className="w-full"
-        onClick={() => {
-          onClick("google");
-        }}
-      >
-        <FcGoogle />
-        Google
-      </Button>
-      <Button
-        size={"lg"}
-        variant={"outline"}
-        className="w-full"
-        onClick={() => {
-          onClick("github");
-        }}
-      >
-        <FaGithub />
-        Github
-      </Button>
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <Button
+          size={"lg"}
+          className="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          onClick={() => {
+            onClick("google");
+          }}
+        >
+          <AiOutlineGoogle />
+          Google
+        </Button>
+      </motion.div>
+
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <Button
+          size={"lg"}
+          className="w-full bg-white/10 hover:bg-white/20 text-white font-medium py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          onClick={() => {
+            onClick("github");
+          }}
+        >
+          <AiOutlineGithub />
+          Github
+        </Button>
+      </motion.div>
     </div>
   );
 };

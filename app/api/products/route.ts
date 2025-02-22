@@ -2,7 +2,6 @@ import { db } from "@/lib/db";
 import { ProductQuerySchema } from "@/types/product";
 import { z } from "zod";
 import { createProduct } from "@/services/productService";
-import { auth } from "@/lib/auth";
 
 //  --------------------------------------post request-----------------------------------------------------------
 

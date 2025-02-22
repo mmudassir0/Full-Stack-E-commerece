@@ -15,3 +15,31 @@ export default auth((req) => {
 export const config = {
   matcher: ["/dashboard/:path*", "/signin", "/signup"],
 };
+
+// import { NextResponse } from "next/server";
+// import type { NextRequest } from "next/server";
+// import { auth } from "./lib/auth";
+
+// export async function middleware(request: NextRequest) {
+//   const session = await auth();
+
+//   if (!session) {
+//     return NextResponse.json(
+//       { error: "Authentication required" },
+//       { status: 401 }
+//     );
+//   }
+
+//   const requestHeaders = new Headers(request.headers);
+//   requestHeaders.set("user", JSON.stringify(session.user));
+
+//   return NextResponse.next({
+//     request: {
+//       headers: requestHeaders,
+//     },
+//   });
+// }
+
+// export const config = {
+//   matcher: ["/api/protected/:path*"],
+// };
