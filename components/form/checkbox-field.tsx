@@ -10,17 +10,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Path, UseFormReturn } from "react-hook-form";
 import { TypeOf, z } from "zod";
 import { GenericZodSchema } from "./form-wrapper";
+import { cn } from "@/lib/utils";
 
 type FormInputProps<T extends GenericZodSchema> = {
   name: Path<TypeOf<T>>;
   label: React.ReactNode;
   form: UseFormReturn<z.infer<T>>;
+  className?: string;
 };
 
 const CheckboxField = <T extends GenericZodSchema>({
   name,
   label,
   form,
+  className,
 }: FormInputProps<T>) => {
   return (
     <FormField
@@ -32,11 +35,11 @@ const CheckboxField = <T extends GenericZodSchema>({
             <Checkbox
               checked={field.value}
               onCheckedChange={field.onChange}
-              className="border-gray-300"
+              className={cn("border-gray-300", className)}
             />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel>{label}</FormLabel>
+            <FormLabel className="text-blue-200">{label}</FormLabel>
             <FormMessage />
           </div>
         </FormItem>

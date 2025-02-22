@@ -19,6 +19,8 @@ model User {
   verificationExpires  DateTime?
   twoFactorEnabled     Boolean    @default(false)
   twoFactorSecret      String?
+  twoFactorCode        String?
+  twoFactorCodeExpires DateTime?
   failedLoginAttempts  Int        @default(0)
   lockedUntil          DateTime?
   lastPasswordChange   DateTime   @default(now())
@@ -42,7 +44,6 @@ model User {
   addresses       Address[]
   activityLogs    ActivityLog[]
   PasswordHistory PasswordHistory[]
-  UserToken       UserToken[]
 
   @@index([email])
   @@index([status])
@@ -95,22 +96,6 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model UserToken {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken  String
-  refreshToken String
-  expiresAt    DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  isRevoked    Boolean  @default(false)
-  deviceInfo   String? // Optional: store user agent/device info
-
-  @@index([userId])
-  @@index([refreshToken])
-}
-
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -148,6 +133,28 @@ model ProductVariant {
   Inventory       Inventory?
 
   @@unique([productId, size, color])
+}
+
+model ActivityLog {
+  id            String         @id @default(cuid())
+  userId        String?
+  action        ActivityAction
+  actionDetails Json?
+  ipAddress     String?
+  deviceDetails String?
+  createdAt     DateTime       @default(now())
+  user          User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum ActivityAction {
+  USER_LOGIN
+  USER_REGISTER
+  USER_LOGOUT
+  PRODUCT_CREATED
+  PRODUCT_UPDATED
+  ORDER_CREATED
+  ORDER_UPDATED
+  REVIEW_CREATED
 }
 
 model ProductImage {
@@ -448,28 +455,6 @@ model Coupon {
 enum DiscountType {
   PERCENTAGE
   FIXED
-}
-
-model ActivityLog {
-  id            String         @id @default(cuid())
-  userId        String?
-  action        ActivityAction
-  actionDetails Json?
-  ipAddress     String?
-  deviceDetails String?
-  createdAt     DateTime       @default(now())
-  user          User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-enum ActivityAction {
-  USER_LOGIN
-  USER_REGISTER
-  USER_LOGOUT
-  PRODUCT_CREATED
-  PRODUCT_UPDATED
-  ORDER_CREATED
-  ORDER_UPDATED
-  REVIEW_CREATED
 }
 
 model Refund {

@@ -22,8 +22,8 @@ export class ImageUploadService {
 
     // Upload to Cloudinary
     const uploadResult = await cloudinary.uploader.upload(fileUri, {
-      folder: "product-images",
-      public_id: `product-${uuidv4()}`,
+      folder: "images",
+      public_id: `${uuidv4()}`,
       transformation: [
         { width: 800, crop: "limit" },
         { quality: "auto" },
@@ -38,13 +38,38 @@ export class ImageUploadService {
     };
   }
 
-  private static validateImage(imageFile: File) {
+  public static validateImage(imageFile: File) {
     if (!this.VALID_IMAGE_TYPES.includes(imageFile.type)) {
       throw new Error("Invalid image type");
     }
 
     if (imageFile.size > this.MAX_FILE_SIZE) {
       throw new Error("Image size too large");
+    }
+  }
+
+  static async deleteImage(publicId: string) {
+    try {
+      if (!publicId) return;
+
+      const result = await cloudinary.uploader.destroy(publicId);
+      return result.result === "ok";
+    } catch (error) {
+      console.error("[CLOUDINARY_DELETE_ERROR]:", error);
+      throw new Error("Failed to delete previous image");
+    }
+  }
+  // Helper to extract publicId from URL
+  static getPublicIdFromUrl(url: string): string | null {
+    try {
+      const urlParts = url.split("/");
+      const imagesPart = urlParts.findIndex((part) => part === "images");
+      if (imagesPart === -1) return null;
+
+      const fileNameWithExtension = urlParts[imagesPart + 1];
+      return `images/${fileNameWithExtension.split(".")[0]}`;
+    } catch {
+      return null;
     }
   }
 }
