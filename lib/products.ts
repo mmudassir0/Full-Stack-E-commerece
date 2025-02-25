@@ -1,0 +1,47 @@
+import { TProduct } from "@/types/product";
+
+export const products: TProduct[] = [
+  {
+    id: 1,
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b",
+    title: "Classic White Sneakers",
+    description: "Comfortable and stylish sneakers for all occasions.",
+    price: 89.99,
+    originalPrice: 129.99,
+    categories: ["Men", "Accessroies"],
+    colors: ["Red", "Green"],
+    sizes: ["S", "M"],
+  },
+  {
+    id: 2,
+    image: "https://images.unsplash.com/photo-1511511450040-677116ff389e",
+    title: "Denim Jacket",
+    description: "A versatile jacket perfect for any casual outfit.",
+    price: 129.99,
+    originalPrice: 149.99,
+    categories: ["Women", "Kids"],
+    colors: ["Blue", "Red"],
+    sizes: ["S", "M", "L", "XL"],
+  },
+  {
+    id: 3,
+    image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+    title: "Summer Dress",
+    description: "Light and breezy dress ideal for warm weather.",
+    price: 79.99,
+    categories: ["Women"],
+    colors: ["White", "Green"],
+    sizes: ["L", "Xl"],
+  },
+  {
+    id: 4,
+    image: "https://images.unsplash.com/photo-1465408953385-7c4627c29435",
+    title: "Leather Watch",
+    description: "A timeless accessory for any wardrobe.",
+    price: 199.99,
+    originalPrice: 229.99,
+    categories: ["Accessroies", "Kids"],
+    colors: ["White", "Black"],
+    sizes: ["M", "L"],
+  },
+];
